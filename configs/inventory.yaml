@@ -1,0 +1,67 @@
+# Home & Remote Lab Inventory - /configs/inventory.yaml
+# Last Updated: 2026-04-19
+# Focus: QA Automation, AI Networking, & LLM Prototyping
+
+lab_infrastructure:
+  isp: "Sonic Fiber"
+  primary_stack: ["WSL2", "Docker", "Ansible", "Jenkins", "Playwright", "n8n"]
+
+home_fleet:
+  - hostname: "Lenovo-Legion-Pro-7i"
+    role: "Control Plane / DevOps Hub"
+    specs:
+      cpu: "Intel i9-14900HX"
+      ram: "32GB DDR5"
+      gpu: "RTX 4090 (16GB VRAM)"
+    active_projects: ["Jenkins Controller", "Automation Framework Execution"]
+
+  - hostname: "MSI-Vector-A16"
+    role: "Logic Hub / Simulation Engine"
+    specs:
+      cpu: "AMD Ryzen 9 8940HX"
+      ram: "16GB DDR5"
+      gpu: "RTX 5070 Ti (12GB VRAM)"
+    active_projects: ["Local LLM Inference (Ollama)", "Network Simulations"]
+
+  - hostname: "Clevo-P65-P67"
+    role: "Dedicated Orchestrator (n8n)"
+    specs:
+      cpu: "Intel i7-6700HQ"
+      ram: "16GB DDR4"
+      gpu: "GTX 980M (8GB VRAM)"
+    active_projects: ["24/7 n8n Orchestration", "Agentic Logic Hub"]
+
+  - hostname: "Supermicro-X11SSV-Q"
+    role: "4K Media / Logic Scout"
+    specs:
+      cpu: "Intel i7-6700K (4.0GHz)"
+      ram: "16GB"
+      gpu: "Radeon Pro WX 4100 (4GB VRAM)"
+    active_projects: ["4K Entertainment", "Background Log Analysis", "Future Lab Node"]
+
+  - hostname: "MSI-GP65-Leopard"
+    role: "Travel / Mobile Node"
+    specs:
+      cpu: "Intel i7-10750H"
+      ram: "16GB"
+      gpu: "RTX 2070 (8GB VRAM)"
+    active_projects: ["Remote Access Jump-box", "Mobile Development"]
+
+remote_poc_servers:
+  - hostname: "ENG-LLM1"
+    location: "Work Lab"
+    role: "RAG / Inference POC"
+    specs:
+      cpu: "Intel Xeon Silver 4310"
+      ram: "128GB"
+      gpu: "Dual NVIDIA Quadro P1000 (8GB Total VRAM)"
+    active_projects: ["Vector DB Ingestion", "Scalable RAG POC"]
+
+  - hostname: "ENG-LLM2"
+    location: "Work Lab"
+    role: "Ampere Compute Prototype"
+    specs:
+      cpu: "Intel Xeon Silver 4208"
+      ram: "192GB"
+      gpu: "NVIDIA A16 (64GB VRAM Pool)"
+    active_projects: ["High-Density LLM Inference", "Large Model Prototyping"]
