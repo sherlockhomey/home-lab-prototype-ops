@@ -1,72 +1,77 @@
-# X11SPA-T "Frankenstein" LLM Node
-**Status:** Operational / Optimizing
+# Project: Local LLM Infrastructure - X11SPA
+**Status:** Phase 3 Optimization Complete (Stable)  
+**Host Machine:** Supermicro X11SPA-T | 192GB DDR4 | Windows 11 LTSC  
+**Primary Objective:** Evaluate local coding LLM performance for small-team QA automation.
 
 ---
 
-## 1. Hardware Specifications
-* **Motherboard:** Supermicro X11SPA-T.
-* **System Memory:** 192GB DDR4 RAM.
-* **GPU Cluster:** 12x AMD Radeon E8860 (GCN 1.0 architecture).
-    * **Physical Layout:** 6x PCIe x16 slots; dual-chip custom boards.
-    * **VRAM:** 2GB per chip (24GB total cluster VRAM).
-* **Operating System:** Windows 11 LTSC.
+## 📜 Phase 1: The "Frankenstein" Era (Legacy AMD)
+* **Hardware:** 12x AMD Radeon E8860 (GCN 1.0 architecture)
+* **Layout:** 6x PCIe cards (Dual-chip boards) | 2GB VRAM per chip (24GB Cluster Total)
+* **Software:** `llama.cpp` with Vulkan 1.2 backend.
+
+### Legacy Benchmarks (Baseline)
+| Configuration | Model | PP (Ingestion) | TG (Generation) | Outcome |
+| :--- | :--- | :--- | :--- | :--- |
+| **CPU Only** | Qwen 2.5 7B | 13.22 t/s | 7.81 t/s | **Pass:** Stable logic. |
+| **12-GPU Cluster**| Qwen 2.5 7B | 2.85 t/s | 3.81 t/s | **Pass:** Row-splitting active. |
+| **Hybrid (RAM+GPU)**| DeepSeek 33B | 2.35 t/s | 1.09 t/s | **Non-Viable:** High latency. |
+
+### Legacy QA Observations & Major Hurdles
+* **The "?????" Token Bug:** Flash Attention on GCN 1.0 architecture caused numerical failure in llama.cpp, resulting in empty or "????" token outputs.
+    * ** लर्निंग (Learning):** Legacy GCN 1.0 drivers do not support necessary operations for FA. It must be explicitly disabled (`-fa 0`) for stable generation.
+* **Severe PCIe Saturation:** Even with 24GB VRAM, the model was fragmented into 12 distinct 2GB "buckets."
+    * **लर्निंग (Learning):** Ingestion speed (PP) was ~78% slower than the CPU because the system spent more time handshaking data between the 12 chips over the PCIe bus than performing math.
 
 ---
 
-## 2. Software Environment
-* **Backend:** Native `llama.cpp` (Vulkan 1.2 build).
-* **Front-end:** Open WebUI (Docker-based).
-* **Test Model:** Qwen2.5-Coder-7B-Instruct-Q4_K_M.gguf.
-    * **Model Size:** 4.36 GiB.
-    * **Quantization:** Q4_K_M (Medium).
+## 🚀 Phase 2: The Modernization (NVIDIA A16 / PG171)
+* **Hardware:** Swapped 12x AMD cards for 1x **NVIDIA A16** (PG171 board).
+    * **Architecture:** Quad-GPU Ampere board (4x GA107 chips).
+    * **VRAM:** 64GB GDDR6 Total (16GB dedicated per chip).
+* **Interconnect:** PCIe Gen 3 (Motherboard limited).
+    * *Technical Note:* An internal bridge chip splits the motherboad's x16 lanes into dedicated 4x lanes for each of the 4 GPUs.
+* **Software Stack:** Migrated from Vulkan to native **CUDA 12.x/13.x**.
 
 ---
 
-## 3. Benchmarking Results
-The following metrics were recorded during the "Hello World" Python script generation test.
+## ⚙️ Phase 3: Driver Tuning & Optimization Hurdles
 
-| Configuration | Prompt Speed (t/s) | Gen Speed (t/s) | Outcome |
-| :--- | :--- | :--- | :--- |
-| **CPU Only** | 13.22 | 7.81 | **Pass:** Coherent output. |
-| **GPU (Flash Attention ON)** | 0.90 | 2.89 | **Fail:** Numerical corruption (`????`). |
-| **GPU (FA OFF, Layer Split)** | 2.85 | 3.65 | **Pass:** Stable and coherent. |
-| **GPU (FA OFF, Row Split)** | 2.85 | 3.81 | **Optimal:** Highest recorded GPU speed. |
+### 1. The "Driver vs. Toolkit" Gap
+* **Hurdle:** The card was visible in Windows, but `llama.cpp` compilation failed because CMake could not find the CUDA compiler (`nvcc`).
+* ** लर्निंग (Learning):** Standard drivers (your initial 595.97 install) allow the OS to use the hardware, but the **CUDA Toolkit** is required for *compiling* CUDA-based applications. Successful rebuild required installing the Toolkit and verifying "Visual Studio Integration" was checked.
 
----
+### 2. Headless Driver Logic (MCDM/NPU)
+* **Hurdle:** Windows 11 Build 26300+ identified the A16 GPUs as **NPUs** (Neural Processing Units) in Task Manager and used the **MCDM (Microsoft Compute Driver Model)** by default. Commands like `nvidia-smi -pm 1` (Persistence Mode) returned "N/A."
+* ** लर्निंग (Learning):** MCDM is the high-performance successor to WDDM for headless compute cards. It allows the OS to manage AI load, but introduces high latency as the driver aggressive powers down between prompts.
 
-## 4. Technical QA Observations
+### 3. Power-Saving "Wake-up Latency"
+* **Hurdle:** Initial prompt ingestion speed (PP) was a sluggish **7 t/s** because the GPUs would idle in Performance State **P8** (210 MHz).
+* **Solution:** Forced the Graphic Clocks to maximum (`nvidia-smi -lgc 1755,1755`) to bypass the "P-State Ramp" latency, jumping PP speed to **~75 t/s**.
 
-### **Critical Bug: Flash Attention Incompatibility**
-* **Symptom:** Output consisted entirely of question marks (`????`).
-* **Diagnosis:** GCN 1.0 legacy drivers do not support modern Flash Attention kernels.
-* **Resolution:** Disabling Flash Attention via the `-fa 0` flag restored math accuracy.
+### 4. Floating-Point "Noise"
+* **Hurdle:** Compilation output was flooded with `warning #221-D: floating-point value does not fit`.
+* ** लर्निंग (Learning):** Safe to ignore in this context. Transformer models use specific extreme constants (like masked attention or infinity representations) that flag standard compiler overflows but are vital for model logic.
 
-### **Bottleneck: PCIe Synchronization**
-* There is a **~78% drop** in prompt ingestion speed when moving from CPU to GPU (13.2 t/s vs 2.8 t/s).
-* This is due to the overhead of synchronizing small data packets across 12 chips via the PCIe bus.
-
-### **VRAM Fitting & Constraints**
-* **OS Tax:** Windows display overhead consumes ~1120 MiB on the primary GPU (Vulkan11), limiting the "lowest common denominator" for the cluster.
-* **Context Scaling:** To maintain a 100% GPU offload, the system automatically reduced the context window from 32,768 to 6,144 tokens.
+### 5. Thermal Management of Passive cards
+* **Hurdle:** Rapid performance degradation during context loading (thermal throttling).
+* ** लर्निंग (Learning):** The NVIDIA A16 is a passively cooled server card. In an open workstation chassis, external high-static-pressure fans or custom shrouds are **mandatory** to prevent the GA107 chips from reaching their 95°C thermal limit during inference.
 
 ---
 
-## 5. Current Stable Launch Command
-```powershell
-.\build\bin\Release\llama-server.exe `
-  -m "C:\ProgramData\LLModels\Qwen2.5-Coder-7B-Instruct-Q4_K_M.gguf" `
-  --port 8080 `
-  --host 0.0.0.0 `
-  -ngl 999 `
-  -sm row `
-  -fa 0 `
-  --cache-type-k f16 `
-  --cache-type-v f16
-```
+## 📊 Performance Benchmarks (2026 Modern Era)
+
+| Model Class | Architecture | Configuration | PP (Ingestion) | TG (Generation) | Context | FA |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Qwen 2.5 7B** | Dense | Single GPU (16GB) | 59.38 t/s | **23.92 t/s** | 32k | N/A |
+| **DeepSeek 33B** | Dense | Dual GPU (32GB Split) | 75.75 t/s | **6.80 t/s** | 8k | On |
+| **Qwen3 MoE** | Sparse (A3B) | Tri GPU (48GB Split) | *Pending* | *Pending* | TBD | TBD |
+
+## 🚀 Future Roadmap
+* **MoE Evaluation:** Determine if sparsity (activating fewer parameters per token) in Qwen3 MoE models can bypass the PCIe synchronization penalty noted in legacy dense models split across chips.
+* **192GB System RAM Offloading:** Test maximum reasoning depth for complex Jenkins pipeline debugging using a massive MoE (DeepSeek-V3) with hybrid VRAM/RAM hosting.
 
 ---
 
-## 6. Next Steps
-* [ ] Connect Open WebUI (Docker) to the native Windows host server via `http://host.docker.internal:8080/v1`.
-* [ ] Evaluate high-parameter models (30B+) to test 192GB RAM hybrid offloading.
-* [ ] Explore `Q4_0` quantization to see if simpler math reduces PCIe overhead.
+### **Work Lab Diary Note**
+*Settings are reverted to factory idle defaults (Clocks/Power) using `nvidia-smi -rgc` between bench sessions to preserve A16 hardware longevity.*
