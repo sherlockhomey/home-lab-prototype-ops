@@ -1,4 +1,4 @@
-# Machine Diary: Supermicro X11SLV-Q (CRS)
+# Supermicro X11SLV-Q (CRS)
 
 ## 🖥️ System Profile
 - **Hostname:** CRS-X11
