@@ -67,9 +67,13 @@
 | **DeepSeek 33B** | Dense | Dual GPU (32GB Split) | 75.75 t/s | **6.80 t/s** | 8k | On |
 | **Qwen3 MoE** | Sparse (A3B) | Tri GPU (48GB Split) | *Pending* | *Pending* | TBD | TBD |
 
-## 🚀 Future Roadmap
-* **MoE Evaluation:** Determine if sparsity (activating fewer parameters per token) in Qwen3 MoE models can bypass the PCIe synchronization penalty noted in legacy dense models split across chips.
-* **192GB System RAM Offloading:** Test maximum reasoning depth for complex Jenkins pipeline debugging using a massive MoE (DeepSeek-V3) with hybrid VRAM/RAM hosting.
+### Phase 4: The MoE Breakthrough (Qwen3-A3B)
+* **Model:** Qwen3-Coder-30B-A3B (Mixture of Experts)
+* **Quantization:** Q4_K_M (~18GB VRAM)
+* **Configuration:** Dual-GPU (Split across NPU 0 & 1)
+* **Results:** * Prompt Speed: 29.67 t/s
+    * **Gen Speed: 43.01 t/s**
+* ** लर्निंग (Learning):** Sparsity is the solution for multi-GPU cards on legacy PCIe buses. By reducing the "Active Parameters" to 3.3B per token, we bypassed the synchronization bottleneck that limited dense 33B models to <7 t/s. This configuration provides the intelligence of a large model with the velocity of a 3B model.
 
 ---
 
