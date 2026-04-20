@@ -11,8 +11,8 @@
 | :--- | :--- |
 | **Motherboard** | Supermicro X11SLV-Q (Mini-ITX) |
 | **CPU** | Intel® Core™ i7-4700 series (Haswell Refresh) |
-| **RAM** | 16GB DDR3L |
-| **GPU** | Discrete 2GB VRAM (Media Offload) |
+| **RAM** | 16GB DDR3 |
+| **GPU** | Discrete 4GB VRAM (Media Offload) |
 | **Networking** | Dual Intel® GbE LAN |
 
 ---
@@ -52,15 +52,16 @@ services:
 volumes:
   n8n_data:
     external: true
+```
 📈 Current Workflows & Study Guides
 GitHub Machine Diary: Automated tracking of lab-wide hardware changes.
 
 Agentic Logic Gates: Routing logic requests between the MSI Vector and Legion Pro 7.
 
-4K Media Playback: Verified smooth 4K decoding using the discrete 2GB GPU while n8n manages background triggers.
+4K Media Playback: Verified smooth 4K decoding using the discrete 4GB GPU while n8n manages background triggers.
 
 📝 Future Milestones
-[ ] Technical Wizard Integration: Deploying telemetry monitoring for the entire home lab.
+[ ] Integration: Deploying telemetry monitoring for the entire home lab.
 
 [ ] SLM Logic Scout: Implementing a localized Phi-3-Mini model (CPU-based) for basic log classification.
 
