@@ -1,4 +1,4 @@
-# Project Diary: X11SPA-T "Frankenstein" LLM Node
+# X11SPA-T "Frankenstein" LLM Node
 **Status:** Operational / Optimizing
 
 ---
