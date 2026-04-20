@@ -1,4 +1,4 @@
-# 📔 Diary: Lenovo Legion 7i Pro
+# Lenovo Legion 7i Pro
 
 ## 🖥️ Machine Profile
 * **Role:** Dedicated CI/CD Development & QA Automation Node.
