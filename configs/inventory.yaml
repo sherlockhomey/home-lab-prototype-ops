@@ -9,6 +9,7 @@ lab_infrastructure:
 home_fleet:
   - hostname: "Lenovo-Legion-Pro-7i"
     role: "Control Plane / DevOps Hub"
+    hosts: 192.168.1.2
     specs:
       cpu: "Intel i9-14900HX"
       ram: "32GB DDR5"
@@ -17,6 +18,7 @@ home_fleet:
 
   - hostname: "MSI-Vector-A16"
     role: "Logic Hub / Simulation Engine"
+    hosts: 192.168.1.3
     specs:
       cpu: "AMD Ryzen 9 8940HX"
       ram: "16GB DDR5"
@@ -24,23 +26,26 @@ home_fleet:
     active_projects: ["Local LLM Inference (Ollama)", "Network Simulations"]
 
   - hostname: "Clevo-P65-P67"
-    role: "Dedicated Orchestrator (n8n)"
+    role: "Local LLM Inference"
+    hosts: 192.168.1.5
     specs:
       cpu: "Intel i7-6700HQ"
       ram: "16GB DDR4"
       gpu: "GTX 980M (8GB VRAM)"
-    active_projects: ["24/7 n8n Orchestration", "Agentic Logic Hub"]
+    active_projects: ["Local LLM Inference (Ollama)", "Agentic Logic Hub"]
 
   - hostname: "Supermicro-X11SSV-Q"
-    role: "4K Media / Logic Scout"
+    role: "4K Media / Dedicated Orchestrator (n8n)"
+    hosts: 192.168.1.6
     specs:
       cpu: "Intel i7-6700K (4.0GHz)"
       ram: "16GB"
       gpu: "Radeon Pro WX 4100 (4GB VRAM)"
-    active_projects: ["4K Entertainment", "Background Log Analysis", "Future Lab Node"]
+    active_projects: ["4K Entertainment", "24/7 n8n Orchestration", "Agentic Logic Hub"]
 
   - hostname: "MSI-GP65-Leopard"
     role: "Travel / Mobile Node"
+    hosts: 192.168.1.4
     specs:
       cpu: "Intel i7-10750H"
       ram: "16GB"
