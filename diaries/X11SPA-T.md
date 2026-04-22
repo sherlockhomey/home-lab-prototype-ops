@@ -70,7 +70,7 @@
 ### Phase 4: The MoE Breakthrough (Qwen3-A3B)
 * **Model:** Qwen3-Coder-30B-A3B (Mixture of Experts)
 * **Quantization:** Q4_K_M (~18GB VRAM)
-* **Configuration:** Dual-GPU (Split across NPU 0 & 1)
+* **Configuration:** Dual_GPU (Split across NPU 0 & 1)
 * **Results:** * Prompt Speed: 29.67 t/s
     * **Gen Speed: 43.01 t/s**
 * ** (Learning):** Sparsity is the solution for multi-GPU cards on legacy PCIe buses. By reducing the "Active Parameters" to 3.3B per token, we bypassed the synchronization bottleneck that limited dense 33B models to <7 t/s. This configuration provides the intelligence of a large model with the velocity of a 3B model
