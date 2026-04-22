@@ -77,7 +77,7 @@
 
 ---
 ### **Work Lab Diary Note**
-*Settings are reverted to factory idle defaults (Clocks/Power) using `nvidia-smi -rgc` between bench sessions to preserve A16 hardware longevity.*
+*Settings are reverted to factory idle defaults (Clocks/Power) using `nvidia-smi -rgc` between bench sessions to preserve A16 longevity.*
 
 # [SYSTEM_COMMAND]
 ACTION: TRIGGER_INFRASTRUCTURE_AUDIT
