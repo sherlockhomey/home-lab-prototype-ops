@@ -1,0 +1,60 @@
+# Project Log: X12SPW-F "The Front Desk"
+**Role:** UI Host, RAG Librarian, and Secondary Inference Engine  
+**Status:** Operational / Phase 2: RAG Optimization
+
+## 🖥️ Technical Specifications
+* **Motherboard:** Supermicro X12SPW-F
+* **CPU:** Intel Xeon Scalable (Ice Lake)
+* **Memory:** 128GB RAM (Dedicated for Vector Database caching)
+* **GPU:** Dual NVIDIA Quadro P1000 (4GB VRAM per card / 8GB Pooled)
+* **Primary Software Stack:** * Windows 11 LTSC (Fresh Install)
+    * Docker Desktop (WSL 2 Backend)
+    * Open WebUI (Containerized)
+    * Ollama (Local Inference/Embeddings)
+    * Python 3.11 (Stability Choice)
+
+---
+
+## 🎯 Current Project Goals
+1.  **Centralized UI:** Host Open WebUI to provide a collaborative interface for the A/V QA team.
+2.  **RAG Knowledge Base:** Index and store a massive library of A/V manuals, PRDs, and hex-code references in the 128GB RAM pool.
+3.  **Distributed Inference:** Route high-logic queries to the X11SPA-T (Brain) while handling quick, low-complexity tasks locally on the P1000s.
+4.  **Team Integration:** Configure multi-user profiles and global model access for coworker collaboration.
+
+---
+
+## 💡 Lessons Learned
+* **Python Versioning:** Python 3.11 is the current "Gold Standard" for local AI engineering. While 3.14 offers performance gains, it lacks the stable library support required for consistent RAG operations.
+* **VRAM Constraints:** 4GB VRAM cards (P1000) require strict model selection. Models like `llama3.2:3b` or `1b` are ideal, whereas `qwen3:4b` often triggers "CPU Spillover," causing significant latency.
+* **Container Networking:** Using `--add-host=host.docker.internal:host-gateway` in Docker is essential for the UI container to "see" the host's Ollama service and external server IPs.
+* **Embedding Efficiency:** Ingestion is a one-time "heavy lift." A 264-page document may take ~45 minutes on the CPU but once indexed, retrieval is near-instantaneous via the RAM cache.
+
+---
+
+## 🚧 Challenges & Resolutions
+### 1. CPU Spiking during Ingestion
+* **Issue:** Embedding models like `nomic-embed-text` default to 100% CPU usage if VRAM is occupied by the UI or other models.
+* **Resolution:** Prioritize local GPU for embeddings using `num_gpu` parameters in Modelfiles to avoid Xeon bottlenecks.
+
+### 2. Multi-Node API Connectivity
+* **Issue:** Open WebUI initially failed to see the X11SPA-T models running on llama.cpp.
+* **Resolution:** Configured `llama-server.exe` with `--host 0.0.0.0` and mapped the specific IP/Port in the Docker run command.
+
+### 3. User Permission "Invisible Models"
+* **Issue:** New user profiles could not see the backend models by default.
+* **Resolution:** Modified Admin settings to set model visibility to "Public" and adjusted default group permissions.
+
+---
+
+## 📅 Milestones Reached
+* **[Done]** Fresh Win11 LTSC install and CUDA driver verification.
+* **[Done]** Successful bridge between X12SPW-F (Front Desk) and X11SPA-T (Brain).
+* **[Done]** Verified 43 tokens/sec inference speed from remote 30B model.
+* **[Done]** Initial Knowledge Base (RAG) ingestion of 264-page A/V manual.
+
+---
+
+## 🛠️ Maintenance & Logs
+* **UI Port:** `http://localhost:3000`
+* **Local API Port:** `http://localhost:11434` (Ollama)
+* **External API Link:** `http://10.7.115.252:8080/v1` (X11SPA-T Brain)
