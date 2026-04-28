@@ -1,4 +1,4 @@
-# Project: Local LLM Infrastructure - X11SPA
+# Project: Local LLM Infrastructure - X11SPA-T
 **Status:** Phase 3 Optimization Complete (Stable)  
 **Host Machine:** Supermicro X11SPA-T | 192GB DDR4 |  Windows 11 LTSC  
 **Primary Objective:** Evaluate local coding LLM performance for small-team QA automation.
