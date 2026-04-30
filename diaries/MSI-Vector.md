@@ -43,6 +43,7 @@ By using **BGP Unnumbered**, we eliminated manual IP management for switch-to-sw
 This was our first step into dynamic routing, showing a simple daisy-chain connection between two Leaf routers.
 
 graph LR
+   
     subgraph Clients
     PC1(PC1<br/>192.168.1.2)
     PC2(PC2<br/>192.168.2.2)
@@ -62,6 +63,7 @@ graph LR
 This diagram reflects the "cross-hatch" pattern required for redundancy, where every Leaf connects to every Spine.
 
 graph TD
+   
     subgraph Spines
     Spine1[Spine1]
     Spine2[Spine2]
@@ -105,6 +107,7 @@ AI servers often require "Layer 2 Adjacency" (same subnet) even when separated b
 This is the complete logical topology including the loopback IDs (VTEPs), ASNs, and the dual-layer (Underlay/Overlay) logic we implemented for the AI fabric.
 
 graph TD
+    
     subgraph "Spines (Route Reflectors)"
     S1["Spine1 (1.1.1.1)<br/>ASN 65021"]
     S2["Spine2 (2.2.2.2)<br/>ASN 65022"]
