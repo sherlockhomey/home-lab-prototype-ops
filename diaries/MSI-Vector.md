@@ -163,6 +163,6 @@ graph TD
 * **VTEP:** Virtual Tunnel End Point; the "entrance/exit" of the VXLAN tunnel.
 * **ECMP:** Equal Cost Multi-Pathing; using multiple links for traffic simultaneously to maximize bandwidth.
 
-## ENDPOINT ##
-
-* Going to move this project to the Clevo machine to free up RAM space for LLM Inferencing and other things. Only 16GB DDR5 RAM currently. Need to upgrade
+Pivot Milestone: Migrated simulation environment to Clevo P65 (32GB RAM).
+Challenge: Encountered "Binary Phantom" where ansible command was missing after install.
+Resolution: Switched to pipx install ansible-core to prioritize the engine binaries. Rebuilt router-config/daemons manually to initialize routing services.
