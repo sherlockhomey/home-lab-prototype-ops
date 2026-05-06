@@ -69,12 +69,12 @@ As of April 2026, the Orchestration Brain has migrated to the **Supermicro X11 C
 
 ## 📓 Diary Update: The "Final Migration Hurdles"
 
-## Hurdle #12: The OS Identity Crisis (Alpine vs. Debian)
+### Hurdle #12: The OS Identity Crisis (Alpine vs. Debian)
 Symptom: apt command not found inside the FRR containers.
 Diagnosis: The fresh pull of quay.io/frrouting/frr:8.5.1 is based on Alpine Linux, not Debian/Ubuntu.
 Resolution: Switched to the apk package manager. Required manual host-key generation (ssh-keygen -A) and physical invocation of the /usr/sbin/sshd binary to open the management door.
 
-## Hurdle #13: The Version Gap (Module Deprecation)
+### Hurdle #13: The Version Gap (Module Deprecation)
 Symptom: couldn't resolve module/action 'frr.frr.frr_config'.
 Diagnosis: Version 2.0.2 of the FRR collection removed the legacy frr_config module in favor of modern standards.
 Resolution: Pivoted the playbook to use ansible.netcommon.cli_config. This is a more robust, future-proof "driver" that handles raw configuration blocks for network devices.
